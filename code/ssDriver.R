@@ -4,13 +4,15 @@ library(R2jags)
 treat = read.csv("data/BRT1-T7_treatments.csv")
 result = read.csv("data/BRT1-T7results.csv")
 
-# Untreated (aka true) enamel d18O, w/ made up SD for now
+# Untreated (aka true) enamel d18O
 d18O_ut = result$d18O[result$Tooth.ID == "BR1" & result$Treatment.Number == 0]
-d18O_ut = c(d18O_ut, 0.3)
+SD_ut = result$StDev[result$Tooth.ID == "BR1" & result$Treatment.Number == 0]
+d18O_ut = c(d18O_ut, SD_ut)
 
-# Measured enamel d18O and made up SD
+# Measured enamel d18O
 d18O_m = result$d18O[result$Tooth.ID == "BR1" & result$Treatment.Number == 5]
-d18O_m = c(d18O_m, 0.3)
+SD_m = result$StDev[result$Tooth.ID == "BR1" & result$Treatment.Number == 5]
+d18O_m = c(d18O_m, SD_ut)
 
 # Treatment water d18O
 d18O_w = treat$Rinse.d18O[treat$Treatment.Number == 5]
