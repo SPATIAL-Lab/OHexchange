@@ -1,3 +1,49 @@
+library(R2jags)
+
+# Read in datasets
+treat = read.csv("data/BRT1-T7_treatments.csv")
+result = read.csv("data/BRT1-T7results.csv")
+
+# Untreated (aka true) enamel d18O
+d18O_ut = result[result$Treatment.Number == 0, ]
+
+# Measured enamel d18O
+d18O_m = result[result$Treatment.Number != 0, ]
+
+# Tooth index linking d18O_m to d18O_ut
+tooth = match(d18O_m$Tooth.ID, d18O_ut$Tooth.ID)
+
+# Treatment water d18O
+d18O_w = treat$Rinse.d18O[match(d18O_m$Treatment.Number, treat$Treatment.Number)]
+
+# Bundle for JAGS
+d = list(d18O_ut = d18O_ut[, 3:4], d18O_m = d18O_m[, 3:4], d18O_w = d18O_w,
+         nteeth = nrow(d18O_ut), nsamples = nrow(d18O_m), tooth = tooth)
+
+# Parameters to save
+p = c("d18O_t", "a_ex", "f_ex", "d18O_p")
+
+# Run the JAGS analysis
+post = jags(d, NULL, p, "code/multisampleJAGS.R", n.iter = 5000,
+            n.burnin = 1000)
+
+View(post$BUGSoutput$summary)
+traceplot(post)
+dev.off()
+
+# Compare predicted with measured
+plot(d18O_m$d18O, post$BUGSoutput$median$d18O_p, pch = 21, 
+     bg = d18O_m$Treatment.Number)
+abline(0, 1)
+legend("bottomright", legend = treat$Rinse.d18O, pch = 21, 
+       pt.bg = 1:7, bty = "n")
+
+# Compare true with untreated
+plot(d18O_ut$d18O, post$BUGSoutput$median$d18O_t, pch = 21, 
+     bg = "white")
+abline(0, 1)
+
+
 # Define sample IDs
 tooth_ids <- unique(result$Tooth.ID)
 N <- length(tooth_ids)
