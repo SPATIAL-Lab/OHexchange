@@ -38,12 +38,23 @@ abline(0, 1)
 legend("bottomright", legend = treat$Rinse.d18O, pch = 21, 
        pt.bg = 1:7, bty = "n")
 
+#Same plot as above, colored by tooth
+result$ID <- as.factor(result$Tooth.ID)
+colors <- setNames(rainbow(length(levels(result$ID))), 
+                   levels(result$ID))
+
+plot(d18O_m$d18O, post$BUGSoutput$median$d18O_p, pch = 21, 
+     bg = colors[ID])
+abline(0, 1)
+legend("bottomright", legend = unique(result$Tooth.ID), pch = 21, 
+       pt.bg = 1:7, bty = "n", cex = 0.8, ncol = 2)
+
 # Compare true with untreated
 plot(d18O_ut$d18O, post$BUGSoutput$median$d18O_t, pch = 21, 
      bg = "white")
 abline(0, 1)
 
-
+#________________________________________________________________________
 # Define sample IDs
 tooth_ids <- unique(result$Tooth.ID)
 N <- length(tooth_ids)
