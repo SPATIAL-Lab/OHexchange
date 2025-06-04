@@ -33,7 +33,7 @@ dev.off()
 
 # Compare predicted with measured
 plot(d18O_m$d18O, post$BUGSoutput$median$d18O_p, pch = 21, 
-     bg = d18O_m$Treatment.Number)
+     bg = d18O_m$Treatment.Number, xlab = "Measured d18O", ylab = "Predicted d18O")
 abline(0, 1)
 legend("bottomright", legend = treat$Rinse.d18O, pch = 21, 
        pt.bg = 1:7, bty = "n")
@@ -44,10 +44,24 @@ colors <- setNames(rainbow(length(levels(result$ID))),
                    levels(result$ID))
 
 plot(d18O_m$d18O, post$BUGSoutput$median$d18O_p, pch = 21, 
-     bg = colors[ID])
+     bg = colors[ID], xlab = "Measured d18O", ylab = "Predicted d18O")
 abline(0, 1)
 legend("bottomright", legend = unique(result$Tooth.ID), pch = 21, 
        pt.bg = 1:7, bty = "n", cex = 0.8, ncol = 2)
+
+# Combining the above two (colors for treatment, shapes for tooth)
+# This one didn't really work out, it's difficult to read and there doesn't seem to be enough shapes that play well with the fill colors to make it work.
+shapes <- as.factor(d18O_m$Treatment.Number)
+pch_values <- c(19, 20, 21, 22, 23, 24, 25)[as.numeric(shapes)]
+
+plot(d18O_m$d18O, post$BUGSoutput$median$d18O_p, pch = pch_values, 
+     bg = colors[ID], xlab = "Measured d18O", ylab = "Predicted d18O")
+abline(0, 1)
+legend("bottomright", legend = unique(result$Tooth.ID), pch = 21, 
+       pt.bg = 1:7, cex = 0.8, ncol = 2, title = "Tooth ID", bty = "n")
+legend("topleft", legend = treat$Rinse.d18O, pch = c(19, 20, 21, 22, 23, 24, 25),
+       pt.bg = "gray",col = "black", cex = 0.8, 
+       title = "Rinse d18O", bty = "n")
 
 # Compare true with untreated
 plot(d18O_ut$d18O, post$BUGSoutput$median$d18O_t, pch = 21, 
