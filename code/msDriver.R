@@ -38,6 +38,27 @@ abline(0, 1)
 legend("bottomright", legend = treat$Rinse.d18O, pch = 21, 
        pt.bg = 1:7, bty = "n")
 
+# Statistical tests on the data
+# Organizing measured and predicted values into a neat data frame
+coords <- data.frame(
+       Measured_d18O = d18O_m$d18O,
+       Predicted_d18O = post$BUGSoutput$median$d18O_p,
+       Treatment = d18O_m$Treatment.Number)
+
+# ANOVA for measured values of treatments 1-3
+# These treatments have the same rinse, different acid treatments
+# Testing to see if the differences in results between treatments are statistically significant
+t1t2t3 <- subset(coords, Treatment %in% c(1, 2, 3))
+
+anova_result <- aov(Measured_d18O ~ factor(Treatment), data = t1t2t3)
+summary(anova_result)
+
+# T-test for measured values of treatments 4+6
+# Treatment 6 is actually a redo of treatment 4, so I expect the difference between the two is not significant, but am doing this test to be thorough
+t4t6 <- subset(coords, Treatment %in% c(4, 6))
+
+t.test(Measured_d18O ~ factor(Treatment), data = t4t6)
+
 #Same plot as above, colored by tooth
 result$ID <- as.factor(result$Tooth.ID)
 colors <- setNames(rainbow(length(levels(result$ID))), 
