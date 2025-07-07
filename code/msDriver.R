@@ -37,6 +37,7 @@ plot(d18O_m$d18O, post$BUGSoutput$median$d18O_p, pch = 21,
 abline(0, 1)
 legend("bottomright", legend = treat$Rinse.d18O, pch = 21, 
        pt.bg = 1:7, bty = "n")
+title("Modeled d18O Matches Measured d18O")
 
 # Statistical tests on the data
 # Organizing measured and predicted values into a neat data frame

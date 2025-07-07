@@ -19,3 +19,4 @@ model {
   f_ex ~ dunif(0, 0.3)
   a_ex ~ dunif(0.990, 1.2)
 }
+
