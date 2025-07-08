@@ -12,9 +12,10 @@ t6diff <- (teethdata$UT.T6) * -1
 t7diff <- (teethdata$UT.T7) * -1
 
 #Average D18O of t1-4, t6
-(mean(t1diff) + mean(t2diff) + mean(t3diff) + mean(t4diff) + mean(t6diff))/5
+(mean(t1diff) + mean(t2diff) + mean(t3diff) + mean(t4diff) + mean(t6diff))/5 #Average is ~0.79
 
-
+SD1 <- c(mean(t1diff), mean(t2diff), mean(t3diff), mean(t4diff), mean(t6diff))
+sd(SD1) # Standard deviation is ~0.13
 
 # New Plot With Everything
 
@@ -116,14 +117,77 @@ legend("right",
        inset = c(-0.425, 0),
        xpd = NA)
 
-#anova testing
-anova <- read.csv("ANOVA sans 5.csv")
+# Figure to show lack of correlation between D18O and untreated enamel value
+# Big Delta vs Little Delta
+# Increase margins for legend
+par(mar = c(6, 4, 4, 8))
+# Make plot
+plot(teethdata$UT.Data, -1* (teethdata$UT.T5), col = "orange", pch = 19, 
+     xlab = expression("δ"^18 * "O of Control Teeth (‰)"), ylab = expression("Δ"^18 * "O (‰)"), main = expression("Differences in δ"^18 * "O between Control, Treatments"), ylim = c(0.2, 5))
+points(teethdata$UT.Data, -1* (teethdata$UT.T2), col = "red", pch = 19)
+points(teethdata$UT.Data, -1* (teethdata$UT.T3), col = "blue", pch = 19)
+points(teethdata$UT.Data, -1* (teethdata$UT.T4), col = "purple", pch = 19)
+points(teethdata$UT.Data, -1* (teethdata$UT.T1), col = "green", pch = 19)
+points(teethdata$UT.Data, -1* (teethdata$UT.T6), col = "black", pch = 19)
+points(teethdata$UT.Data, -1* (teethdata$UT.T7), col = "pink", pch = 19)
+# Legend
+legend("topright",
+       legend = c("Treatment 1", "Treatment 2", "Treatment 3", "Treatment 4", "Treatment 5"),
+       fill = c("green", "red", "blue", "purple", "orange"),
+       bty = "y",
+       title = "Legend",
+       inset = c(-0.33, 0),
+       xpd = NA)
 
-anovatooth <- aov(T1.Data + T2.Data + T3.Data + T4.Data + T5.Data + T4.Redo.Data + T5.Redo.Data ~ Tooth.Number, data = teethdata)
+
+#anova testing
+library(tidyr)
+anova <- read.csv("data/ANOVA.csv")
+
+anovatooth <- aov(T1.Data + T2.Data + T3.Data + T4.Data + T5.Data + T6.Data + T7.Data ~ Tooth.Number, data = teethdata)
 summary(anovatooth)
 
-anovatreatment <- aov(Tooth.1 + Tooth.2 + Tooth.3 + Tooth.4 + Tooth.5 + Tooth.6 + Tooth.7 + Tooth.8 + Tooth.9 + Tooth.10 ~ Treatment, data = anova)
-summary (anovatreatment)
+# ANOVA of all treatments
+longformat1 <- pivot_longer(anova,  #must reorient the data so the ANOVA runs properly
+                           cols = starts_with("Tooth"),  
+                           names_to = "Tooth.ID",
+                           values_to = "Value")
+
+anova_treatment <- aov(Value ~ Treatment, data = longformat1)
+summary(anova_treatment) # P-value 0.333
+
+#Anova of treatments 1-4, 6
+subset_data <- subset(anova, Treatment %in% c(1, 2, 3, 4, 6))
+
+longformat2 <- pivot_longer(subset_data,
+    cols = starts_with("Tooth"),
+    names_to = "Tooth.ID",
+    values_to = "Value")
+ 
+anova_sub_t <- aov(Value ~ Treatment, data = longformat2)
+summary(anova_sub_t) # P-value = 0.747, indicating that the difference between these groups is not statistically significant
+
+# Anova of all trials except 7
+all_but_7 <- subset(anova, Treatment %in% c(1, 2, 3, 4, 5, 6))
+
+longformat3 <- pivot_longer(all_but_7,
+                            cols = starts_with("Tooth"),
+                            names_to = "Tooth.ID",
+                            values_to = "Value")
+
+anova_ab7 <- aov(Value ~ Treatment, data = longformat3)
+summary(anova_ab7) #P-value 0.0278
+
+# Anova of all trials except 5
+all_but_5 <- subset(anova, Treatment %in% c(1, 7))
+
+longformat4 <- pivot_longer(all_but_5,
+                            cols = starts_with("Tooth"),
+                            names_to = "Tooth.ID",
+                            values_to = "Value")
+
+anova_ab5 <- aov(Value ~ Treatment, data = longformat4)
+summary(anova_ab5)
 
 #T-Test for 4 vs 4r (see if the difference is significant)
 
