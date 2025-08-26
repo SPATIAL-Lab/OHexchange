@@ -21,13 +21,17 @@ d18O_w = treat$Rinse.d18O[match(d18O_m$Treatment.Number, treat$Treatment.Number)
 # Acid d18O
 d18O_a = treat$Acid.d18O[match(d18O_m$Treatment.Number, treat$Treatment.Number)]
 
+# One averaging the acid and rinse d18O
+d18O_tr <- (d18O_a + d18O_w)/2
+
 # Bundle for JAGS
 
 ### This is what I'm working on now
 
 
-d = list(d18O_ut = d18O_ut[, 3:4], d18O_m = d18O_m[, 3:4], d18O_tr = (d18O_a + d18O_w)/2,
-         nteeth = nrow(d18O_ut), nsamples = nrow(d18O_m), tooth = tooth)
+d = list(d18O_ut = as.matrix(d18O_ut[, 3:4]), d18O_m = as.matrix(d18O_m[, 3:4]),
+         d18O_a = as.vector(d18O_a), d18O_w = as.vector(d18O_w),
+         nteeth = nrow(d18O_ut), nsamples = nrow(d18O_m), tooth = as.numeric(tooth))
 
 # Parameters to save
 p = c("d18O_t", "a_ex", "f_ex", "d18O_p")
