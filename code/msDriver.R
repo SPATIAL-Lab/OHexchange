@@ -32,12 +32,24 @@ traceplot(post)
 dev.off()
 
 # Compare predicted with measured
+par(mar = c(8, 5, 2, 5)) # Plot margins, default is c(5.1, 4.1, 4.1, 2.1), c(bottom, left, top, right)
+par(mgp = c(2, 0.7, 0))  # Axis label positions, default is c(3, 1, 0), c(label distance, number distance, tick marks)
 plot(d18O_m$d18O, post$BUGSoutput$median$d18O_p, pch = 21, 
-     bg = d18O_m$Treatment.Number, xlab = "Measured d18O", ylab = "Predicted d18O")
+     bg = d18O_m$Treatment.Number, 
+     xlab = expression("Measured δ"^18 * "O"), 
+     ylab = expression("Predicted δ"^18 *"O"))
 abline(0, 1)
-legend("bottomright", legend = treat$Rinse.d18O, pch = 21, 
-       pt.bg = 1:7, bty = "n")
-title("Modeled d18O Matches Measured d18O")
+legend("bottom", 
+       legend = treat$Rinse.d18O, 
+       pch = 21, 
+       pt.bg = 1:7, 
+       bty = "y", 
+       xpd = NA,
+       title = expression("Rinse δ"^18 * "O (‰)"),
+       inset = c(0, -0.68),
+       ncol = 7,
+       cex = 0.8)
+title(expression("Modeled δ"^18 * "O Matches Measured δ"^18 * "O"))
 
 # Statistical tests on the data
 # Organizing measured and predicted values into a neat data frame

@@ -63,9 +63,25 @@ boxplot(data_list3, at = x_positions, names = x_positions,
         boxwex = 20,
         xaxt = "n",
         xlim = c(-50, 260),
-        xlab = "Rinse d18O",
-        ylab = "Isotope shift (permil)",
-        main = "Correlation Between Rinse and Shift Magnitude")
+        xlab = expression("Rinse δ"^18 * "O (‰)"),
+        ylab = expression("Δ"^18 * "O (‰)"),
+        main = expression("Correlation Between Rinse δ"^18 * "O and Shift Magnitude"))
+axis(side = 1, at = seq(-45, 260, by = 25))
+abline(v = 0, lty = 2, col = "black")
+
+# Acid d18O vs D18O
+mamat <- rbind(t2diff, t4diff, t5diff, t6diff, t7diff)
+ma_avg <- colMeans(mamat)
+x_positions2 <- c(-46.90, -10.29, 250)
+
+data_list4 <- list(t1diff, ma_avg, t3diff)
+boxplot(data_list4, at = x_positions2, names = x_positions2,
+        boxwex = 20,
+        xaxt = "n",
+        xlim = c(-50, 260),
+        xlab = expression("Acid δ"^18 * "O (‰)"),
+        ylab = expression("Δ"^18 * "O (‰)"),
+        main = expression("Correlation Between Acid δ"^18 * "O and Shift Magnitude"))
 axis(side = 1, at = seq(-45, 260, by = 25))
 abline(v = 0, lty = 2, col = "black")
 
