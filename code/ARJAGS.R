@@ -2,8 +2,13 @@ model {
   # Apply to each sample individually
   for(i in 1:nsamples) {
     # Forward model for each measurement
-    d18O_p[i] = (1 - f_ex) * d18O_t[tooth[i]] + 
-      f_ex * a_ex * (d18O_a[i] + (a_ex - 1) * 1000)
+    d18O_p[i] = (1 - f_ex) * d18O_t[tooth[i]] +
+      f_ex * ( phi * a_ex * (d18O_a[i] + (a_ex - 1) * 1000) +
+                 (1 - phi) * a_ex * (d18O_w[i] + (a_ex - 1) * 1000) )
+    
+  # (Below is the original so I don't lose it)  
+  #  d18O_p[i] = (1 - f_ex) * d18O_t[tooth[i]] + 
+  #    f_ex * a_ex * (d18O_a[i] + (a_ex - 1) * 1000)
     
     # Likelihood for each measurement
     d18O_m[i, 1] ~ dnorm(d18O_p[i], 1 / pow(d18O_m[i, 2], 2))
@@ -18,5 +23,6 @@ model {
   # Priors (lower = fractionation factor, upper = fraction measured 18O deriving from water)
   f_ex ~ dunif(0, 0.3)
   a_ex ~ dunif(0.990, 1.2)
+  phi ~ dunif(0, 1)
 }
 
