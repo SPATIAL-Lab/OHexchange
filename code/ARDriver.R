@@ -21,12 +21,13 @@ d18O_w = treat$Rinse.d18O[match(d18O_m$Treatment.Number, treat$Treatment.Number)
 # Acid d18O
 d18O_a = treat$Acid.d18O[match(d18O_m$Treatment.Number, treat$Treatment.Number)]
 
+# d18O of each treatment, in order
+d18O_t <- result$d18O[match(d18O_m$Treatment.Number, result$Treatment.Number)]
+
 # One averaging the acid and rinse d18O
 d18O_tr <- (d18O_a + d18O_w)/2
 
 # Bundle for JAGS
-
-### This is what I'm working on now
 
 
 d = list(d18O_ut = as.matrix(d18O_ut[, 3:4]), d18O_m = as.matrix(d18O_m[, 3:4]),
