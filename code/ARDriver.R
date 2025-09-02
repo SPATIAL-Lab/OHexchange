@@ -35,7 +35,7 @@ d = list(d18O_ut = as.matrix(d18O_ut[, 3:4]), d18O_m = as.matrix(d18O_m[, 3:4]),
          nteeth = nrow(d18O_ut), nsamples = nrow(d18O_m), tooth = as.numeric(tooth))
 
 # Parameters to save
-p = c("d18O_t", "a_ex", "f_ex", "d18O_p")
+p = c("d18O_t", "a_ex", "f[1:3]", "d18O_p")
 
 # Run the JAGS analysis
 post = jags(d, NULL, p, "code/ARJAGS.R", n.iter = 5000,
@@ -145,7 +145,7 @@ for (i in 1:N) {
 # Running the model
 library(R2jags)
 
-params <- c("d18O_t", "a_ex", "f_ex", "d18O_p")  # Parameters to track
+params <- c("d18O_t", "a_ex", "f[1:3]", "d18O_p")  # Parameters to track
 
 fit <- jags(
   data = data_jags,

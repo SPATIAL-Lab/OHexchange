@@ -3,8 +3,8 @@ model {
   for(i in 1:nsamples) {
     
   # Updated with Dirichlet Distribution  
-    d18O_p[i] = (1 - f) * d18O_t[tooth[i]] + 
-      f * a_ex * (d18O_a[i] + d18O_w[i] + d18O_ut$d18O + (a_ex - 1) * 1000)
+    d18O_p[i] = (1 - f[1]) * d18O_t[tooth[i]] + 
+      f[2] * a_ex * (d18O_a[i] + d18O_w[i] + (a_ex - 1) * 1000)
     
     # Likelihood for each measurement
     d18O_m[i, 1] ~ dnorm(d18O_p[i], 1 / pow(d18O_m[i, 2], 2))
@@ -17,7 +17,7 @@ model {
   
   # Apply to all samples
   # Priors (lower = fractionation factor, upper = fraction measured 18O deriving from water)
-  f ~ ddirch(c(1, 1, 8))
+  f[1:3] ~ ddirch(c(1, 1, 8))
   a_ex ~ dunif(0.990, 1.2)
 }
 
