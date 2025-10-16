@@ -38,7 +38,7 @@ d = list(d18O_ut = as.matrix(d18O_ut[, 3:4]), d18O_m = as.matrix(d18O_m[, 3:4]),
 p = c("d18O_t", "a_ex", "f[1:3]", "d18O_p")
 
 # Run the JAGS analysis
-post = jags(d, NULL, p, "code/ARJAGS.R", n.iter = 5000,
+post = jags(d, NULL, p, "code/Dirichlet.R", n.iter = 5000,
             n.burnin = 1000)
 
 View(post$BUGSoutput$summary)
